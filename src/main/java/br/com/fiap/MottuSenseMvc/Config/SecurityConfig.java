@@ -1,5 +1,5 @@
+// src/main/java/br/com/fiap/MottuSenseMvc/Config/SecurityConfig.java
 package br.com.fiap.MottuSenseMvc.Config;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,30 +28,23 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/h2-console/**"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
-                        //.requestMatchers(HttpMethod.POST, "/alertas/**").hasRole("ADMIN")
-                        //.requestMatchers(HttpMethod.PUT, "/alertas/**").hasRole("ADMIN")
-                        //.requestMatchers(HttpMethod.DELETE, "/alertas/**").hasRole("ADMIN")
-                        //.requestMatchers(HttpMethod.POST, "/rotas-seguras/**").hasRole("ADMIN")
-                        //.requestMatchers(HttpMethod.PUT, "/rotas-seguras/**").hasRole("ADMIN")
-                        //.requestMatchers(HttpMethod.DELETE, "/rotas-seguras/**").hasRole("ADMIN")
-                        //.requestMatchers(HttpMethod.POST, "/abrigos/**").hasRole("ADMIN")
-                        //.requestMatchers(HttpMethod.PUT, "/abrigos/**").hasRole("ADMIN")
-                        //.requestMatchers(HttpMethod.DELETE, "/abrigos/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.frameOptions().disable())
+                .headers(headers -> headers.disable())
                 .build();
     }
-
-
 
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
