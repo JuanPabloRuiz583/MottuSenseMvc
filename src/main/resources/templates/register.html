@@ -3,15 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 350px;
+            margin: 60px auto;
+            background: #fff;
+            padding: 32px 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 14px;
+            color: #444;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 8px 10px;
+            margin-top: 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            padding: 10px 0;
+            width: 100%;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button[type="button"] {
+            background: #e0e0e0;
+            color: #333;
+            margin-top: 8px;
+        }
+        button:hover {
+            background: #1565c0;
+        }
+        button[type="button"]:hover {
+            background: #bdbdbd;
+        }
+        #tokenResult {
+            margin-top: 18px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<h1>Register User</h1>
-<form th:action="@{/register}" th:object="${userCreateDTO}" method="post">
-    <label>Name: <input th:field="*{nome}" required /></label><br/>
-    <label>Email: <input th:field="*{email}" required /></label><br/>
-    <label>Password: <input th:field="*{password}" type="password" required /></label><br/>
-    <button type="submit">Register</button>
-</form>
-<div th:if="${success}" th:text="${success}"></div>
+<div class="container">
+    <h1>Register User</h1>
+    <form id="registerForm" th:object="${userCreateDTO}">
+        <label>Name:
+            <input th:field="*{nome}" name="nome" required />
+        </label>
+        <label>Email:
+            <input th:field="*{email}" name="email" required />
+        </label>
+        <label>Password:
+            <input th:field="*{password}" name="password" type="password" required />
+        </label>
+        <button type="submit">Register</button>
+    </form>
+    <a th:href="@{/}">
+        <button type="button">Back to Index</button>
+    </a>
+    <div id="tokenResult"></div>
+</div>
+<script>
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            nome: form.nome.value,
+            email: form.email.value,
+            password: form.password.value
+        };
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        if (response.ok) {
+            const result = await response.text();
+            document.getElementById('tokenResult').innerHTML = `<strong>Token:</strong> ${result}`;
+        } else {
+            document.getElementById('tokenResult').innerHTML = `<span style="color:red;">Registration failed.</span>`;
+        }
+    });
+</script>
 </body>
 </html>

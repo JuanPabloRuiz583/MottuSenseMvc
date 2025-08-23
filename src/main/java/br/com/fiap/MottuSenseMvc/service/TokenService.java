@@ -18,6 +18,9 @@ public class TokenService {
     private Algorithm algorithm = Algorithm.HMAC256("secret");
 
     public Token createToken(User user){
+        if (user.getRole() == null) {
+            throw new IllegalArgumentException("User role cannot be null");
+        }
         String jwt = JWT.create()
                 .withSubject(user.getId().toString())
                 .withClaim("email", user.getEmail())
